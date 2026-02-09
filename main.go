@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/server"
 
 func main() {
-	fmt.Println("Hello World")
+	server.Start()
 }
