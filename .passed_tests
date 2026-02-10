@@ -1,6 +1,0 @@
-1_the_server.py~Check that server command is configured
-1_the_server.py~Check that server can be started and stopped
-1_the_server.py~Check that server can be connected to over tcp
-1_the_server.py~Check that server can accept and respond to a command
-1_the_server.py~Check that server waits for null terminated string before responding
-1_the_server.py~Check that server can accept and respond to multiple commands

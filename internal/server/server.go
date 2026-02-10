@@ -3,8 +3,10 @@ package server
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"net"
+	"strings"
+
+	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/parser"
 )
 
 func Start() {
@@ -24,37 +26,46 @@ func Start() {
 			continue
 		}
 
-		handleConnection(conn)
+		go handleConnection(conn)
 	}
 }
 
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
-	fmt.Println("Client connected: ", conn.RemoteAddr())
+	fmt.Printf("--- New connection from %s ---\n", conn.RemoteAddr())
 
-	// Set up a buffered reader to look for the null byte
-	reader := bufio.NewReader(conn)
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		query := scanner.Text()
+		fmt.Printf("Received query: %q\n", query) // Logs what you typed
 
-	for {
-		// 1. Read until the null byte \x00
-		message, err := reader.ReadBytes('\x00')
+		p := parser.New(query)
+		err := p.Parse()
+
 		if err != nil {
-			if err != io.EOF {
-				fmt.Println("Read error: ", err)
-			}
-			break // Connection closed by client
-		}
-
-		// 2. Log what we received (useful for debugging)
-		fmt.Println("Received: ", string(message))
-
-		// 3. Respond back with "hello" followed by a null byte
-		// The test suite requires the null byte to know the response is finished
-		_, err = conn.Write([]byte("hello\x00"))
-		if err != nil {
-			fmt.Println("Write error: ", err)
-			break
+			fmt.Printf("Error: %v\n", err)
+			conn.Write([]byte("parsing_error\n"))
+		} else {
+			response := formatOutput(p.GetOutput())
+			fmt.Printf("Responding: %s\n", response)
+			conn.Write([]byte(response + "\n"))
 		}
 	}
-	fmt.Println("Client disconnected")
+	fmt.Printf("--- Connection closed ---\n")
+}
+
+func formatOutput(output []any) string {
+	if len(output) == 0 {
+		return "no rows"
+	}
+	var res []string
+	for _, val := range output {
+		switch v := val.(type) {
+		case bool:
+			res = append(res, strings.ToUpper(fmt.Sprint(v))) // TRUE not true
+		default:
+			res = append(res, fmt.Sprint(v))
+		}
+	}
+	return strings.Join(res, ", ")
 }
