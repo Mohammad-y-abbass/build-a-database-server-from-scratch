@@ -1,42 +1,35 @@
 package ast
 
 type Node interface {
-	kind() string
+	TokenLiteral() string
+	String() string
+}
+
+type Statement interface {
+	Node
+	StatementNode()
 }
 
 type Expression interface {
 	Node
-	evaluate() any
+	ExpressionNode()
 }
 
-type SelectStatement struct {
-	expressions []Expression
+type Program struct {
+	Statements []Statement
 }
 
-func (s *SelectStatement) kind() string {
-	return "select_statement"
+func (p *Program) TokenLiteral() string {
+	if len(p.Statements) > 0 {
+		return p.Statements[0].TokenLiteral()
+	}
+	return ""
 }
 
-type IntegerLiteral struct {
-	value int
-}
-
-type BooleanLiteral struct {
-	value bool
-}
-
-func (i *IntegerLiteral) kind() string {
-	return "integer_literal"
-}
-
-func (i *IntegerLiteral) evaluate() any {
-	return i.value
-}
-
-func (b *BooleanLiteral) kind() string {
-	return "boolean_literal"
-}
-
-func (b *BooleanLiteral) evaluate() any {
-	return b.value
+func (p *Program) String() string {
+	out := ""
+	for _, s := range p.Statements {
+		out += s.String() + "\n"
+	}
+	return out
 }

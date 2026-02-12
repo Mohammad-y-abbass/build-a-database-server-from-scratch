@@ -24,8 +24,8 @@ func TestAdvance(t *testing.T) {
 		if got != tt.expected {
 			t.Errorf("Step %d: char = %q; expected %q", i, got, tt.expected)
 		}
-		if l.line != tt.line {
-			t.Errorf("Step %d: line = %d; expected %d", i, l.line, tt.line)
+		if l.Line != tt.line {
+			t.Errorf("Step %d: line = %d; expected %d", i, l.Line, tt.line)
 		}
 		if l.column != tt.col {
 			t.Errorf("Step %d: col = %d; expected %d", i, l.column, tt.col)
@@ -70,8 +70,8 @@ func TestSkipWhitespace(t *testing.T) {
 		t.Errorf("peek() = %q; expected %q", l.peek(), 'a')
 	}
 
-	if l.line != 1 {
-		t.Errorf("line = %d; expected %d", l.line, 1)
+	if l.Line != 1 {
+		t.Errorf("line = %d; expected %d", l.Line, 1)
 	}
 
 	if l.column != 4 {
@@ -95,7 +95,7 @@ func TestReadIdentifierTable(t *testing.T) {
 
 	for _, tt := range tests {
 		l := New(tt.input)
-		tok := l.readIdentifier()
+		tok := l.ReadIdentifier()
 
 		if tok.Type != tt.expectedType {
 			t.Errorf("input %q: expected type %v, got %v", tt.input, tt.expectedType, tok.Type)
@@ -105,8 +105,8 @@ func TestReadIdentifierTable(t *testing.T) {
 			t.Errorf("input %q: expected value %q, got %q", tt.input, tt.expectedVal, tok.Value)
 		}
 
-		if tok.col != 1 {
-			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.col)
+		if tok.Col != 1 {
+			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.Col)
 		}
 	}
 }
@@ -135,8 +135,8 @@ func TestReadNumber(t *testing.T) {
 			t.Errorf("input %q: expected value %q, got %q", tt.input, tt.expectedVal, tok.Value)
 		}
 
-		if tok.col != 1 {
-			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.col)
+		if tok.Col != 1 {
+			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.Col)
 		}
 	}
 }
@@ -170,8 +170,8 @@ func TestNextToken(t *testing.T) {
 			t.Errorf("input %q: expected value %q, got %q", tt.input, tt.expectedVal, tok.Value)
 		}
 
-		if tok.col != 1 {
-			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.col)
+		if tok.Col != 1 {
+			t.Errorf("input %q: expected col 1, got %d", tt.input, tok.Col)
 		}
 	}
 }

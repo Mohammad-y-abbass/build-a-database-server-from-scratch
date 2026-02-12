@@ -5,7 +5,7 @@ import "strings"
 type Lexer struct {
 	input  string
 	column int
-	line   int
+	Line   int
 	cursor int
 }
 
@@ -13,7 +13,7 @@ func New(input string) *Lexer {
 	return &Lexer{
 		input:  input,
 		column: 1,
-		line:   1,
+		Line:   1,
 		cursor: 0,
 	}
 }
@@ -43,7 +43,7 @@ func (l *Lexer) skipWhitespace() {
 		case ' ', '\t', '\r':
 			l.advance()
 		case '\n':
-			l.line++
+			l.Line++
 			l.column = 1
 			l.cursor++
 		default:
@@ -52,7 +52,7 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-func (l *Lexer) readIdentifier() Token {
+func (l *Lexer) ReadIdentifier() Token {
 	start := l.cursor
 	startCol := l.column
 
@@ -66,15 +66,15 @@ func (l *Lexer) readIdentifier() Token {
 
 	switch upperValue {
 	case "SELECT":
-		return Token{Type: SELECT_TOKEN, Value: value, line: l.line, col: startCol}
+		return Token{Type: SELECT_TOKEN, Value: value, Line: l.Line, Col: startCol}
 	case "FROM":
-		return Token{Type: FROM_TOKEN, Value: value, line: l.line, col: startCol}
+		return Token{Type: FROM_TOKEN, Value: value, Line: l.Line, Col: startCol}
 	case "TRUE":
-		return Token{Type: TRUE_TOKEN, Value: value, line: l.line, col: startCol}
+		return Token{Type: TRUE_TOKEN, Value: value, Line: l.Line, Col: startCol}
 	case "FALSE":
-		return Token{Type: FALSE_TOKEN, Value: value, line: l.line, col: startCol}
+		return Token{Type: FALSE_TOKEN, Value: value, Line: l.Line, Col: startCol}
 	default:
-		return Token{Type: IDENTIFIER, Value: value, line: l.line, col: startCol}
+		return Token{Type: IDENTIFIER, Value: value, Line: l.Line, Col: startCol}
 	}
 }
 
@@ -95,8 +95,8 @@ func (l *Lexer) readNumber() Token {
 	return Token{
 		Type:  NUMBER,
 		Value: value,
-		line:  l.line,
-		col:   startCol,
+		Line:  l.Line,
+		Col:   startCol,
 	}
 }
 
@@ -104,13 +104,13 @@ func (l *Lexer) NextToken() Token {
 	l.skipWhitespace()
 
 	if l.cursor >= len(l.input) {
-		return Token{Type: EOF_TOKEN, Value: "", line: l.line, col: l.column}
+		return Token{Type: EOF_TOKEN, Value: "", Line: l.Line, Col: l.column}
 	}
 
 	char := l.peek()
 
 	if isAlpha(char) {
-		return l.readIdentifier()
+		return l.ReadIdentifier()
 	}
 
 	if isDigit(char) {
@@ -118,14 +118,17 @@ func (l *Lexer) NextToken() Token {
 	}
 
 	switch char {
+	case '*':
+		l.advance()
+		return Token{Type: ASTERISK, Value: "*", Line: l.Line, Col: l.column - 1}
 	case ',':
 		l.advance()
-		return Token{Type: COMMA, Value: ",", line: l.line, col: l.column - 1}
+		return Token{Type: COMMA, Value: ",", Line: l.Line, Col: l.column - 1}
 	case ';':
 		l.advance()
-		return Token{Type: SEMICOLON, Value: ";", line: l.line, col: l.column - 1}
+		return Token{Type: SEMICOLON, Value: ";", Line: l.Line, Col: l.column - 1}
 	}
 
 	l.advance()
-	return Token{Type: ILLEGAL, Value: string(char), line: l.line, col: l.column - 1}
+	return Token{Type: ILLEGAL, Value: string(char), Line: l.Line, Col: l.column - 1}
 }

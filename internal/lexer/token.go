@@ -13,11 +13,12 @@ const (
 	COMMA        TokenType = ","
 	SEMICOLON    TokenType = ";"
 	ILLEGAL      TokenType = "ILLEGAL"
+	ASTERISK     TokenType = "*"
 )
 
 type Token struct {
 	Type  TokenType
 	Value string
-	line  int
-	col   int
+	Line  int
+	Col   int
 }

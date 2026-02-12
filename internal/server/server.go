@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"strings"
 
+	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/lexer"
 	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/parser"
 )
 
@@ -30,6 +30,11 @@ func Start() {
 	}
 }
 
+const (
+	colorRed   = "\033[31m"
+	colorReset = "\033[0m"
+)
+
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	fmt.Printf("--- New connection from %s ---\n", conn.RemoteAddr())
@@ -39,33 +44,28 @@ func handleConnection(conn net.Conn) {
 		query := scanner.Text()
 		fmt.Printf("Received query: %q\n", query) // Logs what you typed
 
-		p := parser.New(query)
-		err := p.Parse()
+		// Create lexer from query string
+		l := lexer.New(query)
 
-		if err != nil {
-			fmt.Printf("Error: %v\n", err)
-			conn.Write([]byte("parsing_error\n"))
+		// Create parser from lexer
+		p := parser.New(l)
+
+		// Parse the program
+		program := p.ParseProgram()
+
+		// Check for parsing errors
+		if len(p.Errors()) > 0 {
+			errorMsg := p.GetErrorMessage()
+			fmt.Printf("%sParsing error:%s\n%s\n", colorRed, colorReset, errorMsg)
+			conn.Write([]byte(colorRed + errorMsg + colorReset + "\n"))
+		} else if program == nil || len(program.Statements) == 0 {
+			fmt.Printf("%sError: no statements parsed%s\n", colorRed, colorReset)
+			conn.Write([]byte(colorRed + "Error: no statements parsed" + colorReset + "\n"))
 		} else {
-			response := formatOutput(p.GetOutput())
-			fmt.Printf("Responding: %s\n", response)
+			response := p.FormatAST(program)
+			fmt.Printf("Responding:\n%s\n", response)
 			conn.Write([]byte(response + "\n"))
 		}
 	}
 	fmt.Printf("--- Connection closed ---\n")
-}
-
-func formatOutput(output []any) string {
-	if len(output) == 0 {
-		return "no rows"
-	}
-	var res []string
-	for _, val := range output {
-		switch v := val.(type) {
-		case bool:
-			res = append(res, strings.ToUpper(fmt.Sprint(v))) // TRUE not true
-		default:
-			res = append(res, fmt.Sprint(v))
-		}
-	}
-	return strings.Join(res, ", ")
 }
