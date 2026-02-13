@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/lexer"
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/parser"
+	"github.com/Mohammad-y-abbass/moDB/internal/lexer"
+	"github.com/Mohammad-y-abbass/moDB/internal/parser"
 )
 
 func Start() {

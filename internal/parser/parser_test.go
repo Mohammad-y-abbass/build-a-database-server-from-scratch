@@ -3,10 +3,10 @@ package parser
 import (
 	"testing"
 
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/ast"
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/lexer"
+	"github.com/Mohammad-y-abbass/moDB/internal/ast"
+	"github.com/Mohammad-y-abbass/moDB/internal/lexer"
 )
-
+	
 func TestParseSelectStatement(t *testing.T) {
 	tests := []struct {
 		input           string

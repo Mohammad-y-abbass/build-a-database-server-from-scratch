@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/ast"
-	"github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/lexer"
+	"github.com/Mohammad-y-abbass/moDB/internal/ast"
+	"github.com/Mohammad-y-abbass/moDB/internal/lexer"
 )
 
 type Parser struct {

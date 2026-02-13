@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/server"
+import "github.com/Mohammad-y-abbass/moDB/internal/server"
 
 func main() {
 	server.Start()

@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/Mohammad-y-abbass/build-a-database-server-from-scratch/internal/lexer"
+import "github.com/Mohammad-y-abbass/moDB/internal/lexer"
 
 type SelectStatement struct {
 	Token   lexer.Token
